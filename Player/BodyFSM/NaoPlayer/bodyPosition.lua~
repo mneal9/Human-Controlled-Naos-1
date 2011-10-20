@@ -10,7 +10,6 @@ function entry()
 end
 
 function update()
-  changeState = gcm.get_fsm_body_state()
   if (
 end
 
