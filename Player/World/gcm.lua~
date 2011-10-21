@@ -34,6 +34,7 @@ shared.fsm.game_state = '';
 
 util.init_shm_segment(getfenv(), _NAME, shared, shsize);
 
+
 -- initialize player id
 set_team_player_id(Config.game.playerID);
 Speak.talk('Player ID '..Config.game.playerID);

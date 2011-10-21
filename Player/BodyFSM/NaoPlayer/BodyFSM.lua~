@@ -21,7 +21,6 @@ sm = fsm.new(bodyIdle); -- no mess
 sm:add_state(bodyStart); -- no mess
 sm:add_state(bodyStop); -- no mess
 sm:add_state(bodyReady); -- no mess
-sm:add_state(bodyControl);
 sm:add_state(bodySearch);
 sm:add_state(bodyApproach);
 sm:add_state(bodyKick);
