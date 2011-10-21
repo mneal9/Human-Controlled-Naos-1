@@ -15,7 +15,7 @@ end
 function update()
   nextState = gcm.get_next_body_state();
 
-  if (state != nextState) then
+  if (state ~= nextState) then
     if (nextState == 'bodySearch') then
       return 'search';
     end

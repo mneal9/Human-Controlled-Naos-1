@@ -159,6 +159,7 @@ function update(self)
   self.nextAction = nil;
 
   return ret;
+  end
 end
 
 function set_state_debug_handle(self, h, h2)
