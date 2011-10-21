@@ -28,12 +28,14 @@ shared.team.role = vector.zeros(1);
 
 shared.fsm = {};
 shared.fsm.body_state = '';
+shared.fsm.body_curr_state = '';
 shared.fsm.head_state = '';
+shared.fsm.head_curr_state = '';
 shared.fsm.motion_state = '';
 shared.fsm.game_state = '';
+shared.fsm.game_curr_state = '';
 
 util.init_shm_segment(getfenv(), _NAME, shared, shsize);
-
 
 -- initialize player id
 set_team_player_id(Config.game.playerID);

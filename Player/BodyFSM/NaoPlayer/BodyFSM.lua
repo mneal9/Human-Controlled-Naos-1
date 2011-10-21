@@ -21,7 +21,7 @@ sm = fsm.new(bodyIdle); -- no mess
 sm:add_state(bodyStart); -- no mess
 sm:add_state(bodyStop); -- no mess
 sm:add_state(bodyReady); -- no mess
-sm:add_state(bodyControl);
+sm:add_state(bodyControl); -- control state
 sm:add_state(bodySearch);
 sm:add_state(bodyApproach);
 sm:add_state(bodyKick);
@@ -69,7 +69,7 @@ sm:set_transition(bodyApproach, 'fall', bodyPosition);
 sm:set_transition(bodyKick, 'fall', bodyPosition);
 
 -- set state debug handle to shared memory settor
--- sm:set_state_debug_handle(gcm.set_fsm_body_state);
+sm:set_state_debug_handle(gcm.set_fsm_body_state, gcm.set_fsm_body_next_state);
 
 
 function entry()

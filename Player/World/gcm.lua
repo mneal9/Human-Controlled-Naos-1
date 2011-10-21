@@ -28,9 +28,12 @@ shared.team.role = vector.zeros(1);
 
 shared.fsm = {};
 shared.fsm.body_state = '';
+shared.fsm.body_next_state = '';
 shared.fsm.head_state = '';
+shared.fsm.head_next_state = '';
 shared.fsm.motion_state = '';
 shared.fsm.game_state = '';
+shared.fsm.game_next_state = '';
 
 util.init_shm_segment(getfenv(), _NAME, shared, shsize);
 
