@@ -7,7 +7,7 @@ require('Config')
 require('wcm')
 
 t0 = 0;
-timeout = 5.0;
+timeout = 3.0;
 
 maxStep = 0.06;
 

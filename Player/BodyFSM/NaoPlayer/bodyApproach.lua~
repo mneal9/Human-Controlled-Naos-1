@@ -1,8 +1,38 @@
 module(..., package.seeall);
 
-require('gcm')
+require('Body')
+require('walk')
+require('vector')
 require('util')
 require('Config')
+
+require('wcm')
+
+t0 = 0;
+timeout = 10.0;
+
+-- maximum walk velocity
+maxStep = 0.04;
+
+-- ball detection timeout
+tLost = 3.0;
+
+-- kick target threshold
+--xKick = 0.22;
+--xTarget = 0.16;
+xKick = 0.13;
+xTarget = 0.09;
+print('xKick')
+print(xKick)
+
+yKickMin = 0.02;
+yKickMax = 0.05;
+
+-- maximum ball distance threshold
+rFar = 0.45;
+
+-- alignment
+thAlign = 10.0*math.pi/180.0;
 
 
 function entry()
@@ -33,22 +63,7 @@ function update()
 
   attackBearing, daPost = wcm.get_attack_bearing();
 
-  if (t - ball.t > tLost) then
-    return "ballLost";
-  end
-  if (t - t0 > timeout) then
-    return "timeout";
-  end
-  if (ballR > rFar) then
-    return "ballFar";
-  end
-  if (math.abs(attackBearing) > thAlign) then
-    return 'ballAlign';
-  end
-  if ((ball.x < xKick) and (math.abs(ball.y) < yKickMax) and
-      (math.abs(ball.y) > yKickMin)) then
-    return "kick";
-  end
+  return "done"
 end
 
 function exit()

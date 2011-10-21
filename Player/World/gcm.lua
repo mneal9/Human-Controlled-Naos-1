@@ -30,10 +30,8 @@ shared.fsm = {};
 shared.fsm.body_state = '';
 shared.fsm.body_next_state = '';
 shared.fsm.head_state = '';
-shared.fsm.head_next_state = '';
 shared.fsm.motion_state = '';
 shared.fsm.game_state = '';
-shared.fsm.game_next_state = '';
 
 util.init_shm_segment(getfenv(), _NAME, shared, shsize);
 
@@ -54,16 +52,8 @@ function get_body_state()
   return get_fsm_body_state();
 end
 
-function get_head_state()
-  return get_fsm_head_state();
-end
-
-function get_motion_state()
-  return get_fsm_motion_state();
-end
-
-function get_game_state()
-  return get_fsm_game_state();
+function get_next_body_state()
+  return get_fsm_body_next_state();
 end
 
 

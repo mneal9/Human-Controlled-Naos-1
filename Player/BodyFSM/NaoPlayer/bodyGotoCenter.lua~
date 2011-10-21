@@ -70,13 +70,13 @@ function update()
 
   ballR = math.sqrt(ball.x^2 + ball.y^2);
   if (tBall < 1.0) then
-    return 'done';
+    return 'ballFound';
   end
   if ((t - t0 > 2.0) and (rCenterRelative < rClose)) then
     return 'done';
   end
   if (t - t0 > timeout) then
-    return "done";
+    return "timeout";
   end
 end
 

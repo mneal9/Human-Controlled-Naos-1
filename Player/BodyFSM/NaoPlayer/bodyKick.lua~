@@ -58,7 +58,7 @@ function update()
   end
 
   if (t - t0 > timeout) then
-    return "done";
+    return "timeout";
   end
 end
 

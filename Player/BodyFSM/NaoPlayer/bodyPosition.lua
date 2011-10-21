@@ -83,23 +83,8 @@ function update()
 
   walk.set_velocity(vx, vy, va);
   ballR = math.sqrt(ball.x^2 + ball.y^2);
-  if ((tBall < 1.0) and (ballR < rClose)) then
-    return "ballClose";
-  end
 
-  -- TODO: add obstacle detection
-  --us = UltraSound.checkObstacle();
-  us = UltraSound.check_obstacle();
-  if ((t - t0 > 3.0) and (us[1] > 8 or us[2] > 8)) then
-    return 'obstacle'; 
-  end
-
-  if ((t - t0 > 5.0) and (t - ball.t > tLost)) then
-    return "ballLost";
-  end
-  if (t - t0 > timeout) then
-    return "timeout";
-  end
+  return "done"
 end
 
 function exit()

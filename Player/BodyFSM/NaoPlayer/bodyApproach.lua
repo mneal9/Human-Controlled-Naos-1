@@ -63,22 +63,8 @@ function update()
 
   attackBearing, daPost = wcm.get_attack_bearing();
 
-  if (t - ball.t > tLost) then
-    return "ballLost";
-  end
-  if (t - t0 > timeout) then
-    return "timeout";
-  end
-  if (ballR > rFar) then
-    return "ballFar";
-  end
-  if (math.abs(attackBearing) > thAlign) then
-    return 'ballAlign';
-  end
-  if ((ball.x < xKick) and (math.abs(ball.y) < yKickMax) and
-      (math.abs(ball.y) > yKickMin)) then
-    return "kick";
-  end
+  return "done";
+
 end
 
 function exit()

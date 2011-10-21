@@ -38,10 +38,10 @@ function update()
   walk.set_velocity(0, 0, direction*vSpin);
 
   if (t - ball.t < 0.1) then
-    return "ball";
+    return "done";
   end
   if (t - t0 > timeout) then
-    return "timeout";
+    return "done";
   end
 end
 
