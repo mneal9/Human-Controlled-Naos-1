@@ -9,7 +9,7 @@ import os
 #Get user's ID
 usr = str(os.getenv('USER'))
 
-#NOTE!!! Works with code in Human-Controlled-Naos directory
+#Works with code in Human-Controlled-Naos directory!!
 game = open("/home/"+usr+"/Human-Controlled-Naos/Player/GameFSM/RoboCup/GameFSM.lua", "r").readlines()
 body_player = open("/home/"+usr+"/Human-Controlled-Naos/Player/BodyFSM/NaoPlayer/BodyFSM.lua", "r").readlines()
 body_goalie = open("/home/"+usr+"/Human-Controlled-Naos/Player/BodyFSM/NaoGoalie/BodyFSM.lua", "r").readlines()
