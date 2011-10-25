@@ -7,6 +7,7 @@ require('Config')
 require('wcm')
 
 t0 = 0;
+
 timeout = 3.0;
 
 maxStep = 0.06;
@@ -40,9 +41,7 @@ function update()
   local t = Body.get_time();
 
   attackBearing, daPost = wcm.get_attack_bearing();
-  --print('attackBearing: '..attackBearing);
-  --print('daPost: '..daPost);
-  --print('attackBearing', attackBearing)
+
   ball = wcm.get_ball();
 
   ballR = math.sqrt(ball.x^2 + ball.y^2);
@@ -59,19 +58,26 @@ function update()
 
   walk.set_velocity(vx, vy, va);
 
-  if (t - t0 > timeout) then
+  if (t - ball.t > tLost) then
+    return 'ballLost';
+  end
+
+
+  if (nextState ~= _NAME) then
+    --BALL FAR
+    if (ballR > rFar) then
+      return 'done';
+    end
+    --ALL GOOD
+    if (math.abs(attackBearing) < thAlign) then
+      return 'done';
+    end
     return 'done';
   end
-  
-  -- check overshoot
-  --[[
-  if (attackBearing < direction * (2*thAlign)) then
-    print('Orbit: overshoot thres meet. attackBearing: '..attackBearing..' direction: '..direction);
-    return 'done'
-  end
-  --]]
+
 end
 
 function exit()
+  print(_NAME..' exit');
 end
 

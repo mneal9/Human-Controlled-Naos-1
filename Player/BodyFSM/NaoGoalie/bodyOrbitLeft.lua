@@ -5,10 +5,9 @@ require('walk')
 require('vector')
 require('Config')
 require('wcm')
+require('gcm')
 
 t0 = 0;
-
-timeout = 3.0;
 
 maxStep = 0.06;
 
@@ -28,20 +27,20 @@ dribbleThres = 0.75;
 function entry()
   print(_NAME.." entry");
 
-  t0 = Body.get_time();
   attackBearing = wcm.get_attack_bearing();
-  if (attackBearing > 0) then
-    direction = 1;
-  else
-    direction = -1;
-  end
+  direction = -1;
+
+  t0 = Body.get_time();
+
 end
 
 function update()
   local t = Body.get_time();
 
   attackBearing, daPost = wcm.get_attack_bearing();
-
+  --print('attackBearing: '..attackBearing);
+  --print('daPost: '..daPost);
+  --print('attackBearing', attackBearing)
   ball = wcm.get_ball();
 
   ballR = math.sqrt(ball.x^2 + ball.y^2);
@@ -62,7 +61,7 @@ function update()
     return 'ballLost';
   end
 
- --continues until shared memory's next body state is changed
+--continues until shared memory's next body state is changed
   nextState = gcm.get_fsm_body_next_state();
   if (nextState ~= _NAME) then
     --BALL FAR

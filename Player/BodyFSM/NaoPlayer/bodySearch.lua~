@@ -5,20 +5,20 @@ require('walk')
 require('vector')
 require('Config')
 require('wcm')
+require('gcm')
+require('Speak')
 
-t0 = 0;
-timeout = 10.0;
 
 -- turn velocity
 vSpin = 0.3;
 
 direction = 1;
 
-
 function entry()
   print(_NAME.." entry");
 
-  t0 = Body.get_time();
+--check starting next state
+--  state = gcm.get_fsm_body_next_state();
 
   -- set turn direction to last known ball position
   ball = wcm.get_ball();
@@ -27,9 +27,11 @@ function entry()
   else
     direction = -1;
   end
+
 end
 
 function update()
+
   local t = Body.get_time();
 
   ball = wcm.get_ball();
@@ -38,12 +40,20 @@ function update()
   walk.set_velocity(0, 0, direction*vSpin);
 
   if (t - ball.t < 0.1) then
-    return "ball";
+    print 'Ball found'
   end
-  if (t - t0 > timeout) then
-    return "done";
+
+--continues until shared memory's next body state is changed
+  nextState = gcm.get_fsm_body_next_state();
+  if (nextState ~= _NAME) then
+    if (t - ball.t > 0.1) then
+      Speak.talk('Ball still lost')
+    end
+    return 'done'
   end
+
 end
 
 function exit()
+  print(_NAME..' exit');
 end

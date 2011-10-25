@@ -3,39 +3,56 @@ module(..., package.seeall);
 require('Body')
 require('gcm')
 
-state = nil
-
 function entry()
   print(_NAME..' entry');
-
-  state = gcm.get_next_body_state();
 
 end
 
 function update()
-  nextState = gcm.get_next_body_state();
 
-  if (state ~= nextState) then
-    if (nextState == 'bodySearch') then
-      return 'search';
-    end
-    if (nextState == 'bodyApproach') then
-      return 'approach';
-    end
-    if (nextState == 'bodyKick') then
-      return 'kick';
-    end
-    if (nextState == 'bodyOrbit') then
-      return 'orbit';
-    end
-    if (nextState == 'bodyGotoCenter') then
-      return 'center';
-    end
-    if (nextState == 'bodyPosition') then
-      return 'position';
-    end
+--go to next state!
+
+  nextState = gcm.get_fsm_body_next_state();
+
+  if (nextState == 'bodyApproach') then
+    print('must approach');
+    return 'approach';
   end
+  if (nextState == 'bodyKick') then
+    print('must kick');
+    return 'kick';
+  end
+  if (nextState == 'bodyOrbit') then
+    print('must orbit');
+    return 'orbit';
+  end
+  if (nextState == 'bodyGotoCenter') then
+    print('must go to center');
+    return 'center';
+  end
+  if (nextState == 'bodyGotoBall') then
+    print('chase ball');
+    return 'ball';
+  end
+  if (nextState == 'bodyPosition') then
+    print('must position');
+    return 'position';
+  end
+  if (nextState == 'bodyOrbitLeft') then
+    print('must orbit to the left');
+    return 'orbitL';
+  end
+  if (nextState == 'bodyOrbitRight') then
+    print('must orbit to the right');
+    return 'orbitR';
+  end
+  if (nextState == 'bodyHalt') then
+    print('stop');
+    return 'stop';
+  end
+
 end
 
 function exit()
+  print(_NAME..' exit');
 end

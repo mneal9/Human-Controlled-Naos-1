@@ -31,7 +31,7 @@ function update()
     return 'center';
   end
   if (nextState == 'bodyGotoBall') then
-    print('chase ball');
+    print('must go to ball');
     return 'ball';
   end
   if (nextState == 'bodyPosition') then
@@ -45,6 +45,10 @@ function update()
   if (nextState == 'bodyOrbitRight') then
     print('must orbit to the right');
     return 'orbitR';
+  end
+  if (nextState == 'bodyLeft') then
+    print('must go left');
+    return 'left';
   end
 
 end

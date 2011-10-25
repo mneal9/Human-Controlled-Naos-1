@@ -7,14 +7,9 @@ require('Config')
 require('wcm')
 require('gcm')
 
-t0 = 0;
-timeout = 10.0;
-
 maxStep = 0.06;
 
 rClose = 0.30;
-
-ballNear = 0.85;
 
 tLost = 3.0;
 
@@ -22,12 +17,10 @@ tLost = 3.0;
 function entry()
   print(_NAME.." entry");
 
-  t0 = Body.get_time();
 end
 
 function update()
-  local t = Body.get_time();
-
+  
   ball = wcm.get_ball();
   pose = wcm.get_pose();
   ballGlobal = util.pose_global({ball.x, ball.y, 0}, {pose.x, pose.y, pose.a});
@@ -42,6 +35,9 @@ function update()
     -- face center
     centerPosition[3] = math.atan2(centerPosition[2], 0 - centerPosition[1]);
 
+    -- use stricter thresholds
+    thAlign = 10*math.pi/180;
+    rClose = .1;
   else
     if (role == 2) then
       -- defend
@@ -68,21 +64,16 @@ function update()
   walk.set_velocity(vx, vy, va);
 
   ballR = math.sqrt(ball.x^2 + ball.y^2);
-  if (tBall < 3.0) then
-    return 'ballFound';
-  end
-  -- If ball is close, abandon goal to chase it down --
-  if ((tBall < 1.0) and (ballR < ballNear)) then
-    return "ballClose";
-  end
-  if ((t - t0 > 2.0) and (rCenterRelative < rClose)) then
+
+--continues until shared memory's next body state is changed
+  nextState = gcm.get_fsm_body_next_state();
+  if (nextState ~= _NAME) then
     return 'done';
   end
-  if (t - t0 > timeout) then
-    return "timeout";
-  end
+
 end
 
 function exit()
+  print(_NAME..' exit');
 end
 

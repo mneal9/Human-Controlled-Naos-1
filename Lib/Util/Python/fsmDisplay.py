@@ -75,7 +75,7 @@ class fsmDisplay:
 		self.highlight_current_state()
 		
 		#update buttons' statuses
-		self.button_status()
+		#self.button_status()
 	
 		#create event that is constantly renewed to get new data
 		self.root.after(200, self.update)
@@ -95,8 +95,10 @@ class fsmDisplay:
 				self.stateB[fsm][state].grid(row=row_num, column=col_num)
 				#bind button to a click event and pass in fsm and state info
 				self.stateB[fsm][state].bind('<Button-1>', self.makeEventHandler(fsm, state))
-				#configure button's state, at first disabled
-				self.stateB[fsm][state].config(state=DISABLED)
+				#All states not in body, and cetain states should be disabled
+				if fsm != 1 or self.states[fsm][state] == 'bodyStart' or self.states[fsm][state] == 'bodyReady' or self.states[fsm][state] == 'bodyIdle' or self.states[fsm][state] == 'bodyStop':
+					#configure button's state
+					self.stateB[fsm][state].config(state=DISABLED)
 				row_num += 1
 			col_num += 1
 	
@@ -104,7 +106,7 @@ class fsmDisplay:
 	#event, fsm, and state can be passed into change State		  
 	def makeEventHandler(self, fsm, state):
 		def stateEvent(event):
-			if self.stateB[fsm][state]['state'] is not('disabled') and fsm is not 0 and fsm is not 2:
+			if self.stateB[fsm][state]['state'] != 'disabled':
 				self.changeState(fsm, state, event)
 		return stateEvent
 
@@ -117,17 +119,6 @@ class fsmDisplay:
 			self.gcmFSM.set_body_next_state(newState)
 		else:
 			print "Attempt to get state from undefined FSM"
-
-	def button_status(self):
-		#If Body fsm is in state bodyControl
-		if self.currentState[1] == "bodyControl":
-			#Make sure the buttons in bodyfsm are in active state
-			for state in range(len(self.stateB[1])):
-				self.stateB[1][state].config(state=NORMAL)
-		else:
-			#make sure buttons are disabled
-			for state in range(len(self.stateB[1])):
-				self.stateB[1][state].config(state=DISABLED)
 
 	def highlight_current_state(self):
 		#Find current states and highlight them

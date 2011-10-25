@@ -10,7 +10,6 @@ require('gcm')
 require('UltraSound')
 
 t0 = 0;
-timeout = 20.0;
 
 maxStep = 0.06;
 
@@ -23,9 +22,11 @@ function entry()
   print(_NAME.." entry");
 
   t0 = Body.get_time();
+
 end
 
 function update()
+
   local t = Body.get_time();
 
   ball = wcm.get_ball();
@@ -84,9 +85,18 @@ function update()
   walk.set_velocity(vx, vy, va);
   ballR = math.sqrt(ball.x^2 + ball.y^2);
 
-  return "done"
+  if ((t - t0 > 5.0) and (t - ball.t > tLost)) then
+    return "ballLost";
+  end
+
+--continues until shared memory's next body state is changed
+  nextState = gcm.get_fsm_body_next_state();
+  if (nextState ~= _NAME) then
+    return "done";
+  end
 end
 
 function exit()
+  print(_NAME..' exit');
 end
 

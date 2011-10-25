@@ -3,108 +3,100 @@ module(..., package.seeall);
 require('Body')
 require('walk')
 require('vector')
+require('util')
 require('Config')
 require('wcm')
 require('gcm')
+require('UltraSound')
 
 t0 = 0;
-timeout = 20.0;
 
-maxStep = 0.04;
+maxStep = 0.06;
 
-maxPosition = 0.55;
+rClose = 0.35;
 
-ballNear = 0.85;
-
-rClose = 0.40;
-
-tLost = 6.0;
+tLost = 3.0;
 
 
 function entry()
   print(_NAME.." entry");
 
   t0 = Body.get_time();
+
 end
 
 function update()
+
   local t = Body.get_time();
 
-  -- get ball pose
   ball = wcm.get_ball();
-  ballR = math.sqrt(ball.x^2 + ball.y^2);
-  tBall = Body.get_time() - ball.t;  
-
-  -- get robot pose
   pose = wcm.get_pose();
-
-  -- pose of the ball in the world frame
   ballGlobal = util.pose_global({ball.x, ball.y, 0}, {pose.x, pose.y, pose.a});
+  tBall = Body.get_time() - ball.t;
 
-  -- define home goalie position (in front of goal and facing the ball)
-  --homePosition = 1.0*vector.new(wcm.get_goal_defend());
-  homePosition = 0.98*vector.new(wcm.get_goal_defend());
+  role = gcm.get_team_role();
+  if (role == 2) then
+    -- defend
+    homePosition = .6 * ballGlobal;
+    homePosition[1] = homePosition[1] - 0.50*util.sign(homePosition[1]);
+    homePosition[2] = homePosition[2] - 0.80*util.sign(homePosition[2]);
 
-  vBallHome = math.exp(-math.max(tBall-3.0, 0)/4.0)*(ballGlobal - homePosition);
-  rBallHome = math.sqrt(vBallHome[1]^2 + vBallHome[2]^2);
+  elseif (role == 3) then
+    -- support
+    attackGoalPosition = vector.new(wcm.get_goal_attack());
 
-  if (rBallHome > maxPosition) then
-    scale = maxPosition/rBallHome;
-    vBallHome = scale*vBallHome;
-  end
-  homePosition = homePosition + vBallHome;
+    --[[
+    homePosition = ballGlobal;
+    homePosition[1] = homePosition[1] + 0.75*util.sign(homePosition[1]);
+    homePosition[1] = util.sign(homePosition[1])*math.min(2.0, math.abs(homePosition[1]));
+    homePosition[2] = 
+    --]]
 
-  if (tBall > 8) then
-    va = .35*wcm.get_attack_bearing();
+    -- move near attacking goal
+    homePosition = attackGoalPosition;
+    -- stay in the field (.75 m from end line)
+    homePosition[1] = homePosition[1] - util.sign(homePosition[1]) * 1.0;
+    -- go to far post (.75 m from center)
+    homePosition[2] = -1*util.sign(ballGlobal[2]) * .75;
+
+    -- face ball 
+    homePosition[3] = ballGlobal[3];
   else
-    va = math.atan2(ball.y, ball.x);
+    -- attack
+    homePosition = ballGlobal;
   end
-  
+
+  -- do not go into own penalty box
+  if (gcm.get_team_color() == 1) then
+    -- red
+    homePosition[1] = math.min(homePosition[1], 2.2);
+  else
+    -- blue
+    homePosition[1] = math.max(homePosition[1], -2.2);
+  end
+
   homeRelative = util.pose_relative(homePosition, {pose.x, pose.y, pose.a});
-  rhomeRelative = math.sqrt(homeRelative[1]^2 + homeRelative[2]^2);
+  rHomeRelative = math.sqrt(homeRelative[1]^2 + homeRelative[2]^2);
 
-  vx = maxStep*homeRelative[1]/rhomeRelative;
-  vy = maxStep*homeRelative[2]/rhomeRelative;
-  
+  vx = maxStep*homeRelative[1]/rHomeRelative;
+  vy = maxStep*homeRelative[2]/rHomeRelative;
+  va = .5*math.atan2(ball.y, ball.x + 0.05);
+
   walk.set_velocity(vx, vy, va);
+  ballR = math.sqrt(ball.x^2 + ball.y^2);
 
-  --[[
-  goalieRadius = 1.0;
-  goal = wcm.get_goal_defend();
-  goalToBall = ballGlobal - goal;
-  theta = math.atan2(goalToBall[2], goalToBall[1]);
-  posRelToGoal = vector.new({goalieRadius*math.cos(theta), goalieRadius*math.sin(theta),theta});
-  finGlbPos = util.pose_global(posRelToGoal, goal);
-
-  -- based on your relative pose and your desired pose, calculate the walk velocity
-  vStep = vector.new({0,0,0});
-  vStep[1] = .1*(finGlbPos[1]-pose.x);
-  vStep[2] = .15*(finGlbPos[2]-pose.y);
-  scale = math.min(maxStep/math.sqrt(vStep[1]^2+vStep[2]^2), 1);
-  vStep = scale*vStep;
-  vStep[3] = 0.15*(finGlbPos[3]-pose.a);
-  
-  walk.set_velocity(vStep[1],vStep[2],vStep[3])
-  --walk.set_velocity(0,0,0,0)
-
-  -- checks for transitions
-  -- close to the ball?
-  --]]
-
-  -- If ball is close, abandon goal to chase it down --
-  if ((tBall < 3.0) and (ballR < ballNear)) then
-    return "ballClose";
-  end
-  -- lost ball
-  if ((t - t0 > 1.0) and (t - ball.t > tLost)) then
+  if ((t - t0 > 5.0) and (t - ball.t > tLost)) then
     return "ballLost";
   end
-  -- timeout
-  if (t - t0 > timeout) then
-    return "timeout";
+
+--continues until shared memory's next body state is changed
+  nextState = gcm.get_fsm_body_next_state();
+  if (nextState ~= _NAME) then
+    return "done";
   end
 end
 
 function exit()
+  print(_NAME..' exit');
 end
 

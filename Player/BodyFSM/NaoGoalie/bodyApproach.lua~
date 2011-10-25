@@ -8,44 +8,32 @@ require('Config')
 require('gcm')
 require('wcm')
 
-t0 = 0;
-
 -- maximum walk velocity
 maxStep = 0.04;
 
 -- ball detection timeout
 tLost = 3.0;
 
--- kick target threshold
---xKick = 0.22;
---xTarget = 0.16;
-xKick = 0.13;
-xTarget = 0.09;
-print('xKick')
-print(xKick)
+-- kick threshold
+xKick = 0.22;
+xTarget = 0.16;
+
 
 yKickMin = 0.02;
 yKickMax = 0.05;
 
 -- maximum ball distance threshold
-rFar = 0.45;
+rFar = 1.0;
 
 -- alignment
-thAlign = 10.0*math.pi/180.0;
+thAlign = 30.0*math.pi/180.0;
 
 
 function entry()
   print(_NAME.." entry");
-
---check starting next state
---  state = gcm.get_fsm_body_next_state();
-
-  t0 = Body.get_time();
-
 end
 
 function update()
-
   local t = Body.get_time();
 
   -- get ball position
@@ -67,34 +55,17 @@ function update()
 
   attackBearing, daPost = wcm.get_attack_bearing();
 
---BALL LOST
   if (t - ball.t > tLost) then
     return "ballLost";
   end
 
---BALL KICK
-  if ((ball.x < xKick) and (math.abs(ball.y) < yKickMax) and
-      (math.abs(ball.y) > yKickMin)) then
-    return "kick";
-  end
-
-  --continues until shared memory's next body state is changed
   nextState = gcm.get_fsm_body_next_state();
   if (nextState ~= _NAME) then
-    --BALL FAR
-    if (ballR > rFar) then
-      return "done";
-    end
-    --BALL ALIGN
-    if (math.abs(attackBearing) > thAlign) then
-      return 'done';
-    end
-    return 'done';
+    return 'done'
   end
 
 end
 
 function exit()
-  print(_NAME..' exit');
 end
 

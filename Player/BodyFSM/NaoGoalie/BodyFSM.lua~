@@ -43,7 +43,7 @@ sm:set_transition(bodyControl, 'orbit', bodyOrbit);
 sm:set_transition(bodyControl, 'center', bodyGotoCenter);
 sm:set_transition(bodyControl, 'position', bodyPosition);
 sm:set_transition(bodyControl, 'ball', bodyGotoBall);
-sm:set_transition(bodyControl, 'stop', bodyHalt);
+sm:set_transition(bodyControl, 'halt', bodyHalt);
 sm:set_transition(bodyControl, 'orbitL', bodyOrbitLeft);
 sm:set_transition(bodyControl, 'orbitR', bodyOrbitRight);
 
