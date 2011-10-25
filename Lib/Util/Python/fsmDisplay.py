@@ -96,7 +96,7 @@ class fsmDisplay:
 				#bind button to a click event and pass in fsm and state info
 				self.stateB[fsm][state].bind('<Button-1>', self.makeEventHandler(fsm, state))
 				#All states not in body, and cetain states should be disabled
-				if fsm != 1 or self.states[fsm][state] == 'bodyStart' or self.states[fsm][state] == 'bodyReady' or self.states[fsm][state] == 'bodyIdle' or self.states[fsm][state] == 'bodyStop':
+				if fsm != 1 or self.states[fsm][state] == 'bodyStart' or self.states[fsm][state] == 'bodyReady' or self.states[fsm][state] == 'bodyIdle' or self.states[fsm][state] == 'bodyStop' or self.states[fsm][state] == 'bodyAnnass':
 					#configure button's state
 					self.stateB[fsm][state].config(state=DISABLED)
 				row_num += 1

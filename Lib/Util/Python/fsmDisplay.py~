@@ -106,7 +106,7 @@ class fsmDisplay:
 	#event, fsm, and state can be passed into change State		  
 	def makeEventHandler(self, fsm, state):
 		def stateEvent(event):
-			if self.stateB[fsm][state]['state'] is not 'disabled':
+			if self.stateB[fsm][state]['state'] != 'disabled':
 				self.changeState(fsm, state, event)
 		return stateEvent
 
